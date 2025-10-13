@@ -1,0 +1,168 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Travel Animation Keyframes */
+@keyframes fly-1 {
+  0% {
+    transform: translateX(-100px) translateY(0px);
+  }
+  25% {
+    transform: translateX(25vw) translateY(-20px);
+  }
+  50% {
+    transform: translateX(50vw) translateY(10px);
+  }
+  75% {
+    transform: translateX(75vw) translateY(-15px);
+  }
+  100% {
+    transform: translateX(100vw) translateY(0px);
+  }
+}
+
+@keyframes fly-2 {
+  0% {
+    transform: translateX(100px) translateY(0px);
+  }
+  25% {
+    transform: translateX(75vw) translateY(15px);
+  }
+  50% {
+    transform: translateX(50vw) translateY(-10px);
+  }
+  75% {
+    transform: translateX(25vw) translateY(20px);
+  }
+  100% {
+    transform: translateX(-100px) translateY(0px);
+  }
+}
+
+@keyframes fly-3 {
+  0% {
+    transform: translateX(-80px) translateY(0px);
+  }
+  50% {
+    transform: translateX(50vw) translateY(-30px);
+  }
+  100% {
+    transform: translateX(100vw) translateY(0px);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes cloud-1 {
+  0% {
+    transform: translateX(0px) translateY(0px);
+  }
+  25% {
+    transform: translateX(20px) translateY(-10px);
+  }
+  50% {
+    transform: translateX(40px) translateY(0px);
+  }
+  75% {
+    transform: translateX(20px) translateY(10px);
+  }
+  100% {
+    transform: translateX(0px) translateY(0px);
+  }
+}
+
+@keyframes cloud-2 {
+  0% {
+    transform: translateX(0px) translateY(0px);
+  }
+  33% {
+    transform: translateX(-15px) translateY(-5px);
+  }
+  66% {
+    transform: translateX(15px) translateY(5px);
+  }
+  100% {
+    transform: translateX(0px) translateY(0px);
+  }
+}
+
+@keyframes cloud-3 {
+  0% {
+    transform: translateX(0px) translateY(0px);
+  }
+  50% {
+    transform: translateX(-10px) translateY(-8px);
+  }
+  100% {
+    transform: translateX(0px) translateY(0px);
+  }
+}
+
+/* Animation Classes */
+.animate-fly-1 {
+  animation: fly-1 20s linear infinite;
+}
+
+.animate-fly-2 {
+  animation: fly-2 25s linear infinite;
+}
+
+.animate-fly-3 {
+  animation: fly-3 30s linear infinite;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-cloud-1 {
+  animation: cloud-1 15s ease-in-out infinite;
+}
+
+.animate-cloud-2 {
+  animation: cloud-2 12s ease-in-out infinite;
+}
+
+.animate-cloud-3 {
+  animation: cloud-3 18s ease-in-out infinite;
+}
+
+html,
+body {
+  scroll-behavior: smooth !important;
+}
+
+/* It makes the HTML progress bar filling smooth when value change. */
+progress::-webkit-progress-value {
+  transition: 0.6s width ease-out;
+}
+
+@layer base {
+  .btn-gradient {
+    @apply !bg-gradient !bg-[length:300%_300%] hover:saturate-[1.2] shadow duration-100 !border-0 !border-transparent !bg-transparent animate-shimmer disabled:!bg-none disabled:!bg-gray-500/30  !text-white;
+  }
+  .btn {
+    @apply !capitalize;
+  }
+}
+
+/* daisyUI 버튼 Weight 한글 폰트 적용을 위함 */
+.btn {
+  text-transform: none;
+}
+
+/* 커스텀 폰트 */
+@font-face {
+  font-family: "JalnanGothic";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_231029@1.1/JalnanGothic.woff")
+    format("woff");
+  font-weight: normal;
+  font-style: normal;
+}

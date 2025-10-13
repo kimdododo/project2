@@ -1,0 +1,132 @@
+services:
+  # MySQL 데이터베이스
+  mysql:
+    image: mysql:8.0
+    container_name: project-mysql
+    command: ["--default-authentication-plugin=mysql_native_password","--character-set-server=utf8mb4","--collation-server=utf8mb4_0900_ai_ci","--sql-require-primary-key=ON"]
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: yt
+      MYSQL_USER: ytuser
+      MYSQL_PASSWORD: ytpw
+      TZ: Asia/Seoul
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -proot --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  # PostgreSQL (Airflow용)
+  airflow-db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    volumes:
+      - airflow_db:/var/lib/postgresql/data
+
+  # 백엔드 (FastAPI)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: project-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - MYSQL_DB=yt
+      - MYSQL_USER=ytuser
+      - MYSQL_PW=ytpw
+      - YOUTUBE_API_KEY=AIzaSyBvOkBwv7wjH4fE8oY2cQ9mN3pL6sT1uV7w
+    depends_on:
+      mysql:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  # 프론트엔드 (Next.js)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: project-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+      - NEXT_PUBLIC_SUPABASE_URL=https://axyzrvlfcpysyqonqvhq.supabase.co
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF4eXpydmxmY3B5c3lxb25xdmhxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAxODIwNzYsImV4cCI6MjA3NTc1ODA3Nn0.-9RXGg_8EUQI92GLqscW0qMzstjEcJjjtIMY2deRpas
+      - SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: npm run dev
+
+  # Airflow 웹서버
+  airflow-webserver:
+    build:
+      context: .
+      dockerfile: Dockerfile.airflow
+    image: airflow-ml:latest
+    command: webserver
+    env_file:
+      - ./.env
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@airflow-db/airflow
+      AIRFLOW__WEBSERVER__EXPOSE_CONFIG: "True"
+      PYTHONPATH: /opt/airflow/dags
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/requirements.txt:/requirements.txt
+    depends_on:
+      - airflow-db
+      - mysql
+
+  # Airflow 스케줄러
+  airflow-scheduler:
+    image: airflow-ml:latest
+    command: scheduler
+    env_file:
+      - ./.env
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@airflow-db/airflow
+      PYTHONPATH: /opt/airflow/dags
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/requirements.txt:/requirements.txt
+    depends_on:
+      - airflow-db
+      - mysql
+
+  # Airflow 초기화
+  airflow-init:
+    image: airflow-ml:latest
+    entrypoint: bash -c "airflow db init && airflow users create --username admin --password admin --firstname a --lastname a --role Admin --email a@a.a && /bin/true"
+    env_file:
+      - ./.env
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@airflow-db/airflow
+    volumes:
+      - ./airflow/requirements.txt:/requirements.txt
+    depends_on:
+      - airflow-db
+      - mysql
+
+volumes:
+  mysql_data: {}
+  airflow_db: {}
