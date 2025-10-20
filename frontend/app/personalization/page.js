@@ -149,7 +149,7 @@ export default function Personalization() {
               <Brain className="w-5 h-5 text-blue-600" />
             </div>
             <div>
-              <h2 className="font-bold text-sky-600">Yotuberabo</h2>
+                <h2 className="font-bold text-sky-600">유튜브라보콘</h2>
               <p className="text-sm text-gray-500">개인화 추천</p>
             </div>
           </div>

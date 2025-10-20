@@ -1,9 +1,9 @@
 "use client";
 
-const ButtonKakaoLogin = ({ isLoading, onClick }) => {
+const ButtonNaverLogin = ({ isLoading, onClick }) => {
   return (
     <button
-      className="btn w-full bg-yellow-400 text-black border-none hover:bg-yellow-500 font-bold h-12"
+      className="btn w-full bg-green-500 text-white border-none hover:bg-green-600 font-bold h-12"
       onClick={onClick}
       disabled={isLoading}
     >
@@ -13,14 +13,15 @@ const ButtonKakaoLogin = ({ isLoading, onClick }) => {
         <div className="flex items-center justify-center w-full">
           <div className="w-6 h-6 mr-3 flex items-center justify-center">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M12 3C6.48 3 2 6.48 2 10.5c0 2.5 1.5 4.5 3.5 5.5L4 21l5.5-2c1 .5 2 .5 3 0l5.5 2-1.5-5c2-1 3.5-3 3.5-5.5C22 6.48 17.52 3 12 3z" fill="#000"/>
+              <rect width="24" height="24" rx="4" fill="#03C75A"/>
+              <path d="M8 6h8v2H8V6zm0 4h8v2H8v-2zm0 4h8v2H8v-2z" fill="white"/>
             </svg>
           </div>
-          <span className="text-left">카카오 로그인</span>
+          <span className="text-left">네이버 로그인</span>
         </div>
       )}
     </button>
   );
 };
 
-export default ButtonKakaoLogin;
+export default ButtonNaverLogin;

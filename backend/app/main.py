@@ -13,7 +13,8 @@ import requests
 import bcrypt
 import jwt
 from datetime import datetime, timedelta
-from typing import Optional, Dict
+from typing import Optional, Dict, Any, List
+import json
 
 # YouTube API Key
 YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
@@ -117,6 +118,96 @@ async def get_current_user(authorization: Optional[str] = Header(None)):
         return {"email": email, "role": payload.get("role", "user")}
     except jwt.PyJWTError:
         raise HTTPException(status_code=401, detail="토큰이 유효하지 않습니다.")
+
+# --------------------
+# Personalization + Chat (lightweight scaffold)
+# --------------------
+
+class Preferences(BaseModel):
+    sentiment: Dict[str, bool] | None = None  # {"pos": true, "neu": false, ...}
+    intents: List[str] | None = None          # ["힐링", "자연", ...]
+    segments: Dict[str, Any] | None = None    # {"age": "20s", "region": "서울"}
+
+class ChatRequest(BaseModel):
+    message: str
+
+# In-memory conversation store (per-process)
+conversations: Dict[str, List[Dict[str, str]]] = {}
+
+async def _ensure_pref_table():
+    async with SessionLocal() as s:
+        await s.execute(text(
+            """
+            CREATE TABLE IF NOT EXISTS user_preferences (
+                email VARCHAR(255) PRIMARY KEY,
+                data TEXT
+            )
+            """
+        ))
+        await s.commit()
+
+@app.get("/api/preferences")
+async def get_preferences(current_user: dict = Depends(get_current_user)):
+    await _ensure_pref_table()
+    async with SessionLocal() as s:
+        res = await s.execute(
+            text("SELECT data FROM user_preferences WHERE email=:email"),
+            {"email": current_user["email"]},
+        )
+        row = res.fetchone()
+        if row and row[0]:
+            return json.loads(row[0])
+        # default empty preferences
+        return {"sentiment": {"pos": True}, "intents": [], "segments": {}}
+
+@app.put("/api/preferences")
+async def put_preferences(payload: Preferences, current_user: dict = Depends(get_current_user)):
+    await _ensure_pref_table()
+    data = json.dumps(payload.dict())
+    async with SessionLocal() as s:
+        # upsert
+        await s.execute(
+            text(
+                """
+                INSERT INTO user_preferences(email, data)
+                VALUES(:email, :data)
+                ON DUPLICATE KEY UPDATE data = :data
+                """
+            ),
+            {"email": current_user["email"], "data": data},
+        )
+        await s.commit()
+    return {"ok": True}
+
+@app.post("/api/chat")
+async def chat(req: ChatRequest, current_user: dict = Depends(get_current_user)):
+    email = current_user["email"]
+    history = conversations.setdefault(email, [])
+    # fetch preferences to steer response (very light rule-based response for now)
+    prefs = await get_preferences(current_user)  # type: ignore
+    persona = []
+    if isinstance(prefs, dict):
+        intents = prefs.get("intents") or []
+        if intents:
+            persona.append(f"선호 의도: {', '.join(intents)}")
+        sent = prefs.get("sentiment") or {}
+        pos = [k for k, v in sent.items() if v]
+        if pos:
+            persona.append(f"감정 선호: {', '.join(pos)}")
+    persona_text = "; ".join(persona) if persona else "선호 정보 없음"
+
+    # toy response (RAG/LLM 자리에 향후 교체). 최근 5개만 반영
+    last_user_utts = [h["content"] for h in history[-5:] if h["role"] == "user"]
+    reply = (
+        "사용자 선호를 반영한 답변입니다. "
+        f"({persona_text}). 최근 문의: {last_user_utts[-1] if last_user_utts else '첫 대화'}\n"
+        "- 예시: '힐링'과 '자연'을 선호하신다면 제주 오름/숲길 영상을 추천드려요.\n"
+        "- 더 구체적인 지역이나 계절을 알려주시면 맞춤 추천을 강화할게요."
+    )
+
+    history.append({"role": "user", "content": req.message})
+    history.append({"role": "assistant", "content": reply})
+    return {"reply": reply, "history_len": len(history)}
 
 @app.post("/api/run", response_model=RunOut)
 async def run(payload: RunIn):

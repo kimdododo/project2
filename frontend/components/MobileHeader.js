@@ -9,7 +9,12 @@ import {
   Filter,
   Menu,
   X,
-  Home
+  Home,
+  Brain,
+  MapPin,
+  Calendar,
+  Heart,
+  MessageSquare
 } from "lucide-react";
 
 export default function MobileHeader({ title, subtitle, icon: Icon, onFilterClick }) {
@@ -26,7 +31,7 @@ export default function MobileHeader({ title, subtitle, icon: Icon, onFilterClic
                 <Icon className="w-5 h-5 text-blue-600" />
               </div>
               <div>
-                <h2 className="font-bold text-sky-600">Yotuberabo</h2>
+                <h2 className="font-bold text-sky-600">유튜브라보콘</h2>
                 <p className="text-xs text-gray-500">{subtitle}</p>
               </div>
             </div>
@@ -60,7 +65,7 @@ export default function MobileHeader({ title, subtitle, icon: Icon, onFilterClic
                   <Icon className="w-5 h-5 text-blue-600" />
                 </div>
                 <div>
-                  <h2 className="font-bold text-sky-600">Yotuberabo</h2>
+                  <h2 className="font-bold text-sky-600">유튜브라보콘</h2>
                   <p className="text-sm text-gray-500">{subtitle}</p>
                 </div>
               </div>
@@ -81,6 +86,30 @@ export default function MobileHeader({ title, subtitle, icon: Icon, onFilterClic
                 <a href="/dashboard" className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-100">
                   <BarChart3 className="w-5 h-5" />
                   대시보드
+                </a>
+                <a href="/personalization" className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-100">
+                  <Brain className="w-5 h-5" />
+                  개인화 추천
+                </a>
+                <a href="/map" className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-100">
+                  <MapPin className="w-5 h-5" />
+                  지도
+                </a>
+                <a href="/planner" className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-100">
+                  <Calendar className="w-5 h-5" />
+                  여행 계획
+                </a>
+                <a href="/taste" className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-100">
+                  <Heart className="w-5 h-5" />
+                  내 취향
+                </a>
+                <a href="/qa" className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-100">
+                  <MessageSquare className="w-5 h-5" />
+                  여행 Q&A
+                </a>
+                <a href="/settings" className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-100">
+                  <Search className="w-5 h-5" />
+                  설정
                 </a>
               </div>
             </div>

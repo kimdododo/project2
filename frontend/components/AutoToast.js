@@ -29,7 +29,7 @@ export function AutoToast() {
     const firstTimer = setTimeout(() => {
       toast(messages[0], {
         duration: 4000,
-        position: "top-right",
+        position: "bottom-right",
         style: {
           background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
           color: 'white',
@@ -64,7 +64,7 @@ export function AutoToast() {
       timer = setTimeout(() => {
         toast(messages[messageIndex], {
           duration: 4000,
-          position: "top-right",
+          position: "bottom-right",
           style: {
             background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
             color: 'white',

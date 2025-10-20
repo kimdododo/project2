@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import ButtonLogin from "./ButtonLogin";
+import ThemeToggle from "./ThemeToggle";
 import logo from "@/app/icon.png";
 import config from "@/config";
 
@@ -42,12 +42,16 @@ const links = [
     label: "여행 Q&A",
   },
   {
-    href: "/#pricing",
+    href: "/pricing",
     label: "가격",
   },
 ];
 
-const cta = <ButtonLogin extraStyle="btn-primary rounded-3xl" />;
+const cta = (
+  <Link href="/signin" className="btn btn-primary rounded-3xl">
+    로그인하기
+  </Link>
+);
 
 // 왼쪽에는 로고가 있는 헤더, 중앙에는 링크(예: 가격, 리뷰 등), 오른쪽에는 CTA(예: 시작하기 또는 로그인)가 있습니다.
 // 헤더는 반응형입니다. 모바일에서는 링크가 버거 버튼 뒤에 숨겨져 있습니다.
@@ -115,8 +119,11 @@ const Header = () => {
           ))}
         </div>
 
-        {/* large 사이즈 화면에 표시되는 CTA */}
-        <div className="hidden lg:flex lg:justify-end lg:ml-12">{cta}</div>
+        {/* large 사이즈 화면에 표시되는 CTA + Theme */}
+        <div className="hidden lg:flex lg:items-center lg:justify-end lg:ml-12 gap-2">
+          <ThemeToggle />
+          {cta}
+        </div>
       </nav>
 
       {/* 모바일 메뉴, 메뉴 상태에 따라 표시/숨기기. */}

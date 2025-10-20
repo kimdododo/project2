@@ -2,26 +2,8 @@
 
 import { useState, useEffect } from "react";
 import apiClient from "@/libs/api";
-import { 
-  BarChart3, 
-  TrendingUp, 
-  Heart, 
-  Users, 
-  PlayCircle, 
-  MessageSquare,
-  Search,
-  Calendar,
-  Star,
-  Eye,
-  ThumbsUp,
-  Share2,
-  Download,
-  Filter,
-  MoreHorizontal,
-  Brain,
-  MapPin,
-  Home
-} from "lucide-react";
+import { BarChart3, TrendingUp, Heart, Users, PlayCircle, MessageSquare, Search, Calendar, Star, Eye, ThumbsUp, Share2, Download, Filter, MoreHorizontal, Brain, MapPin, Home } from "lucide-react";
+import SidebarNav from "@/components/SidebarNav";
 import AIInsights from "../../components/AIInsights";
 import Link from "next/link";
 import WordCloud from "@/components/WordCloud";
@@ -187,88 +169,8 @@ export default function Dashboard() {
     <div className="min-h-screen bg-gray-50">
 
       <div className="flex">
-        {/* Left Sidebar */}
-        <div className="w-64 bg-white border-r border-gray-200 min-h-screen">
-          <div className="p-6">
-            <div className="flex items-center gap-3 mb-8">
-              <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                <BarChart3 className="w-5 h-5 text-blue-600" />
-              </div>
-              <div>
-                <h2 className="font-bold text-sky-600">Yotuberabo</h2>
-                <p className="text-sm text-gray-500">대시보드</p>
-              </div>
-            </div>
-            
-            {/* 사용자 정보 */}
-            {user && (
-              <div className="mb-6 p-3 bg-gray-50 rounded-lg">
-                <p className="text-sm text-gray-600">안녕하세요,</p>
-                <p className="font-medium text-gray-900">{user.name}</p>
-                <p className="text-xs text-gray-500">{user.email}</p>
-              </div>
-            )}
-
-            {/* 네비게이션 */}
-            <nav className="space-y-2">
-              <Link href="/" className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-100">
-                <Home className="w-5 h-5" />
-                홈
-              </Link>
-              <Link href="/recommendations" className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-100">
-                <Users className="w-5 h-5" />
-                채널 추천
-              </Link>
-              <Link href="/analysis" className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-100">
-                <TrendingUp className="w-5 h-5" />
-                채널 분석
-              </Link>
-              <Link href="/personalization" className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-100">
-                <Brain className="w-5 h-5" />
-                개인화 추천
-              </Link>
-              <Link href="/dashboard" className="flex items-center gap-3 px-3 py-2 rounded-lg bg-blue-50 text-blue-700 border border-blue-200">
-                <BarChart3 className="w-5 h-5" />
-                대시보드
-              </Link>
-              <Link href="/map" className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-100">
-                <MapPin className="w-5 h-5" />
-                지도
-              </Link>
-              <Link href="/planner" className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-100">
-                <Calendar className="w-5 h-5" />
-                여행 계획
-              </Link>
-              <Link href="/taste" className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-100">
-                <Heart className="w-5 h-5" />
-                내 취향
-              </Link>
-              <Link href="/qa" className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-100">
-                <MessageSquare className="w-5 h-5" />
-                여행 Q&A
-              </Link>
-              <Link href="/settings" className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-100">
-                <Search className="w-5 h-5" />
-                설정
-              </Link>
-            </nav>
-            
-            {/* 로그아웃 버튼 */}
-            <div className="mt-8 pt-4 border-t">
-              <button 
-                onClick={() => {
-                  localStorage.removeItem('access_token');
-                  localStorage.removeItem('user');
-                  window.location.href = '/signin';
-                }}
-                className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-red-600 hover:bg-red-50"
-              >
-                <Users className="w-5 h-5" />
-                로그아웃
-              </button>
-            </div>
-          </div>
-        </div>
+        {/* Left Sidebar - unified */}
+        <SidebarNav active="/dashboard" />
 
         {/* Main Content */}
         <div className="flex-1 p-6">
@@ -524,7 +426,7 @@ export default function Dashboard() {
       {/* Bottom Right Corner */}
       <div className="fixed bottom-4 right-4">
         <div className="bg-white p-3 rounded-lg shadow-lg border border-gray-200">
-          <p className="text-sm text-gray-600">Yotuberabo에게 바라는 점이 있으신가요?</p>
+          <p className="text-sm text-gray-600">유튜브라보콘에게 바라는 점이 있으신가요?</p>
           <div className="w-4 h-4 text-gray-400 mt-1">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />

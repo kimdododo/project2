@@ -2,28 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { 
-  Heart, 
-  Search, 
-  Filter, 
-  MapPin, 
-  Users, 
-  Calendar,
-  Star,
-  TrendingUp,
-  Clock,
-  Eye,
-  ThumbsUp,
-  MessageSquare,
-  Share2,
-  Bookmark,
-  BarChart3,
-  Brain,
-  Bell,
-  Settings,
-  User,
-  Target
-} from "lucide-react";
+import { Heart, Search, Filter, MapPin, Users, Calendar, Star, TrendingUp, Clock, Eye, ThumbsUp, MessageSquare, Share2, Bookmark, BarChart3, Brain, Bell, Settings, User, Target, Home } from "lucide-react";
+import SidebarNav from "@/components/SidebarNav";
 
 export default function TastePage() {
   const [user, setUser] = useState(null);
@@ -148,79 +128,8 @@ export default function TastePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Sidebar */}
-      <div className="fixed inset-y-0 left-0 w-64 bg-white shadow-lg z-30">
-        <div className="p-6">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-              <Heart className="w-5 h-5 text-blue-600" />
-            </div>
-            <div>
-              <h2 className="font-bold text-sky-600">Yotuberabo</h2>
-              <p className="text-sm text-gray-500">내 취향</p>
-            </div>
-          </div>
-          
-          {/* 사용자 정보 */}
-          {user && (
-            <div className="mb-6 p-3 bg-gray-50 rounded-lg">
-              <p className="text-sm text-gray-600">안녕하세요,</p>
-              <p className="font-medium text-gray-900">{user.name}</p>
-              <p className="text-xs text-gray-500">{user.email}</p>
-            </div>
-          )}
-          
-          <nav className="space-y-2">
-            <Link href="/recommendations" className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-100">
-              <Users className="w-5 h-5" />
-              채널 추천
-            </Link>
-            <Link href="/analysis" className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-100">
-              <TrendingUp className="w-5 h-5" />
-              채널 분석
-            </Link>
-            <Link href="/personalization" className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-100">
-              <Brain className="w-5 h-5" />
-              개인화 추천
-            </Link>
-            <Link href="/dashboard" className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-100">
-              <BarChart3 className="w-5 h-5" />
-              대시보드
-            </Link>
-            <Link href="/map" className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-100">
-              <MapPin className="w-5 h-5" />
-              지도
-            </Link>
-            <Link href="/planner" className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-100">
-              <Calendar className="w-5 h-5" />
-              여행 계획
-            </Link>
-            <Link href="/taste" className="flex items-center gap-3 px-3 py-2 rounded-lg bg-blue-50 text-blue-700 border border-blue-200">
-              <Heart className="w-5 h-5" />
-              내 취향
-            </Link>
-            <Link href="/qa" className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-100">
-              <MessageSquare className="w-5 h-5" />
-              여행 Q&A
-            </Link>
-            <Link href="/settings" className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-100">
-              <Search className="w-5 h-5" />
-              설정
-            </Link>
-          </nav>
-          
-          {/* 로그아웃 버튼 */}
-          <div className="mt-8 pt-4 border-t">
-            <button 
-              onClick={logout}
-              className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-red-600 hover:bg-red-50"
-            >
-              <Users className="w-5 h-5" />
-              로그아웃
-            </button>
-          </div>
-        </div>
-      </div>
+      {/* Sidebar - unified */}
+      <SidebarNav active="/taste" />
 
       {/* Main Content */}
       <div className="ml-64 p-8">

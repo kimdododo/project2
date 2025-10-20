@@ -2,6 +2,7 @@ import { Noto_Sans_KR } from "next/font/google";
 import PlausibleProvider from "next-plausible";
 import { getSEOTags } from "@/libs/seo";
 import ClientLayout from "@/components/LayoutClient";
+// import QueryProvider from "@/components/QueryProvider";
 import AuthGuard from "@/components/AuthGuard";
 import config from "@/config";
 import "./globals.css";
@@ -40,10 +41,10 @@ export default function RootLayout({ children }) {
         <head>
           <PlausibleProvider domain={config.domainName} />
           {/* PWA 메타 태그 */}
-          <meta name="application-name" content="Yotuberabo" />
+          <meta name="application-name" content="유튜브라보콘" />
           <meta name="apple-mobile-web-app-capable" content="yes" />
           <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-          <meta name="apple-mobile-web-app-title" content="Yotuberabo" />
+          <meta name="apple-mobile-web-app-title" content="유튜브라보콘" />
           <meta name="format-detection" content="telephone=no" />
           <meta name="mobile-web-app-capable" content="yes" />
           <meta name="msapplication-config" content="/icons/browserconfig.xml" />

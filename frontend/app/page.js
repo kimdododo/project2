@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import ProgressBar from "@/components/ProgressBar";
 import { AutoToast } from "@/components/AutoToast";
 import Link from "next/link";
+import RevealOnScroll from "@/components/RevealOnScroll";
 import { 
   BarChart3, 
   TrendingUp, 
@@ -78,7 +79,7 @@ export default function Home() {
           <div className="hero-content text-center relative z-10">
             <div className="max-w-4xl">
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-sky-700 mb-6">
-                새로운 여행의 시작, Yotuberabo와 함께!
+                새로운 여행의 시작, 유튜브라보콘과 함께!
               </h1>
               <p className="text-lg sm:text-xl text-sky-700 mb-8 max-w-4xl mx-auto">
                 AI가 당신의 여행 취향을 분석하여 완벽한 영상을 추천해드립니다.
@@ -98,17 +99,17 @@ export default function Home() {
         {/* Features Section */}
         <section className="py-20 bg-gradient-to-b from-sky-50 to-blue-50">
           <div className="container mx-auto px-4">
-            <div className="text-center mb-16">
+            <RevealOnScroll className="text-center mb-16" delay={50}>
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-sky-800 mb-4">
                 개인화된 추천 기능
               </h2>
               <p className="text-lg sm:text-xl text-sky-700 max-w-3xl mx-auto">
                 AI가 당신의 취향을 학습하여 완벽한 영상을 추천합니다
               </p>
-            </div>
+            </RevealOnScroll>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-              <div className="card bg-white shadow-xl border border-sky-100 hover:shadow-2xl transition-shadow">
+              <RevealOnScroll className="card bg-white shadow-xl border border-sky-100 hover:shadow-2xl transition-shadow" delay={100}>
                 <div className="card-body text-center">
                   <Heart className="w-12 h-12 text-sky-500 mx-auto mb-4" />
                   <h3 className="card-title justify-center mb-2 text-sky-800">취향 분석</h3>
@@ -116,9 +117,9 @@ export default function Home() {
                     당신의 시청 패턴을 분석하여 개인화된 추천을 제공합니다
                   </p>
                 </div>
-              </div>
+              </RevealOnScroll>
               
-              <div className="card bg-white shadow-xl border border-sky-100 hover:shadow-2xl transition-shadow">
+              <RevealOnScroll className="card bg-white shadow-xl border border-sky-100 hover:shadow-2xl transition-shadow" delay={150}>
                 <div className="card-body text-center">
                   <TrendingUp className="w-12 h-12 text-sky-500 mx-auto mb-4" />
                   <h3 className="card-title justify-center mb-2 text-sky-800">트렌드 추천</h3>
@@ -126,9 +127,9 @@ export default function Home() {
                     실시간 인기 키워드와 트렌드를 반영한 맞춤 영상을 추천합니다
                   </p>
                 </div>
-              </div>
+              </RevealOnScroll>
               
-              <div className="card bg-white shadow-xl border border-sky-100 hover:shadow-2xl transition-shadow">
+              <RevealOnScroll className="card bg-white shadow-xl border border-sky-100 hover:shadow-2xl transition-shadow" delay={200}>
                 <div className="card-body text-center">
                   <Star className="w-12 h-12 text-sky-500 mx-auto mb-4" />
                   <h3 className="card-title justify-center mb-2 text-sky-800">맞춤 추천</h3>
@@ -136,9 +137,9 @@ export default function Home() {
                     당신만을 위한 개인화된 알고리즘으로 완벽한 영상을 추천합니다
                   </p>
                 </div>
-              </div>
+              </RevealOnScroll>
               
-              <div className="card bg-white shadow-xl border border-sky-100 hover:shadow-2xl transition-shadow">
+              <RevealOnScroll className="card bg-white shadow-xl border border-sky-100 hover:shadow-2xl transition-shadow" delay={250}>
                 <div className="card-body text-center">
                   <Users className="w-12 h-12 text-sky-500 mx-auto mb-4" />
                   <h3 className="card-title justify-center mb-2 text-sky-800">관심 채널</h3>
@@ -146,9 +147,9 @@ export default function Home() {
                     당신이 좋아할 만한 새로운 채널을 발견하고 추천합니다
                   </p>
                 </div>
-              </div>
+              </RevealOnScroll>
               
-              <div className="card bg-white shadow-xl border border-sky-100 hover:shadow-2xl transition-shadow">
+              <RevealOnScroll className="card bg-white shadow-xl border border-sky-100 hover:shadow-2xl transition-shadow" delay={300}>
                 <div className="card-body text-center">
                   <MessageSquare className="w-12 h-12 text-sky-500 mx-auto mb-4" />
                   <h3 className="card-title justify-center mb-2 text-sky-800">시청 히스토리</h3>
@@ -156,9 +157,9 @@ export default function Home() {
                     당신의 시청 기록을 분석하여 더 정확한 추천을 제공합니다
                   </p>
                 </div>
-              </div>
+              </RevealOnScroll>
               
-              <div className="card bg-white shadow-xl border border-sky-100 hover:shadow-2xl transition-shadow">
+              <RevealOnScroll className="card bg-white shadow-xl border border-sky-100 hover:shadow-2xl transition-shadow">
                 <div className="card-body text-center">
                   <Target className="w-12 h-12 text-sky-500 mx-auto mb-4" />
                   <h3 className="card-title justify-center mb-2 text-sky-800">스마트 큐레이션</h3>
@@ -166,7 +167,7 @@ export default function Home() {
                     AI가 당신의 시간대와 상황에 맞는 최적의 영상을 큐레이션합니다
                   </p>
                 </div>
-              </div>
+              </RevealOnScroll>
             </div>
           </div>
         </section>
@@ -182,7 +183,7 @@ export default function Home() {
                     여행 피드백
                   </h2>
                   <p className="text-sky-100 mb-2">
-                    Yotuberabo와 함께 여행하면서 불편을 느끼셨나요?
+                    유튜브라보콘과 함께 여행하면서 불편을 느끼셨나요?
                   </p>
                   <p className="text-sky-100 mb-6">
                     지금 바로 알려주세요.

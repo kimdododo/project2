@@ -2,7 +2,7 @@ import themes from "daisyui/src/theming/themes";
 
 const config = {
   // 필수 : 웹앱 이름을 적어주세요.
-  appName: "Yotuberabo",
+  appName: "유튜브라보콘",
   // 필수 : 앱 설명 (SEO 태그에 사용됨. 덮어쓸 수 있음)
   appDescription:
     "유튜브 시청자들을 위한 AI 기반 영상 추천 서비스입니다. 개인화된 알고리즘으로 당신에게 딱 맞는 영상을 찾아드립니다.",

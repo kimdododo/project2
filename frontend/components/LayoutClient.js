@@ -47,7 +47,8 @@ const ClientLayout = ({ children }) => {
             secondary: 'white',
           },
         }}
-        position="top-right"
+        position="bottom-right"
+        containerStyle={{ bottom: 100, right: 16 }}
       />
     </>
   );

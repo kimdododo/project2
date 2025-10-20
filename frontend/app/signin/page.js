@@ -1,50 +1,29 @@
 "use client";
 
 import { useState } from "react";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 import config from "@/config";
 import HeaderCenter from "@/components/HeaderCenter";
 import ButtonGoogleLogin from "@/components/ButtonGoogleLogin";
 import ButtonKakaoLogin from "@/components/ButtonKakaoLogin";
+import ButtonNaverLogin from "@/components/ButtonNaverLogin";
 
-// Supabase 회원가입 및 로그인 페이지
+// 로컬 인증 로그인 페이지
 export default function Login() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const supabase = createClientComponentClient();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [isDisabled, setIsDisabled] = useState(false);
 
-  const handleSignup = async (e, options) => {
-    e?.preventDefault();
-
+  const handleOAuthLogin = async (provider) => {
     setIsLoading(true);
-
     try {
-      const { type, provider } = options;
-      const redirectURL = window.location.origin + "/api/auth/callback";
-
-      if (type === "oauth") {
-        await supabase.auth.signInWithOAuth({
-          provider,
-          options: {
-            redirectTo: redirectURL,
-          },
-        });
-      }
+      // 간단한 OAuth 시뮬레이션 (실제로는 백엔드 API 호출)
+      toast.success(`${provider} 로그인 기능은 준비 중입니다!`);
     } catch (error) {
-      console.error(error);
-      if (error.message === "Invalid OTP") {
-        toast.error("OTP 코드가 올바르지 않습니다.");
-      } else if (error.message === "Invalid login credentials") {
-        toast.error("로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.");
-      } else {
-        toast.error(error.message || "로그인에 실패했습니다.");
-      }
+      toast.error("로그인에 실패했습니다.");
     } finally {
       setIsLoading(false);
     }
@@ -133,15 +112,17 @@ export default function Login() {
 
         <div className="divider">또는</div>
 
-        <ButtonGoogleLogin
-          isLoading={isLoading}
-          onClick={(e) =>
-            handleSignup(e, { type: "oauth", provider: "google" })
-          }
-        />
         <ButtonKakaoLogin
           isLoading={isLoading}
-          onClick={(e) => handleSignup(e, { type: "oauth", provider: "kakao" })}
+          onClick={() => handleOAuthLogin("Kakao")}
+        />
+        <ButtonNaverLogin
+          isLoading={isLoading}
+          onClick={() => handleOAuthLogin("Naver")}
+        />
+        <ButtonGoogleLogin
+          isLoading={isLoading}
+          onClick={() => handleOAuthLogin("Google")}
         />
 
         <div className="text-center">
