@@ -23,6 +23,8 @@ import {
   Home,
   AlertCircle
 } from "lucide-react";
+import MobileNavigation from "@/components/MobileNavigation";
+import MobileHeader from "@/components/MobileHeader";
 export default function Recommendations() {
   const [isLoading, setIsLoading] = useState(true);
   const [recommendations, setRecommendations] = useState([]);
@@ -234,19 +236,29 @@ export default function Recommendations() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      {/* Sidebar */}
-      <div className="w-64 bg-white shadow-sm border-r">
-        <div className="p-6">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-              <Users className="w-5 h-5 text-blue-600" />
+    <div className="min-h-screen bg-gray-50">
+      {/* Mobile Header */}
+      <MobileHeader 
+        title="영상 추천"
+        subtitle="채널 추천"
+        icon={Users}
+        onFilterClick={() => setFilter("all")}
+      />
+
+      {/* Desktop Layout */}
+      <div className="hidden lg:flex">
+        {/* Desktop Sidebar */}
+        <div className="w-64 bg-white shadow-sm border-r">
+          <div className="p-6">
+            <div className="flex items-center gap-3 mb-8">
+              <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                <Users className="w-5 h-5 text-blue-600" />
+              </div>
+              <div>
+                <h2 className="font-bold text-sky-600">Yotuberabo</h2>
+                <p className="text-sm text-gray-500">채널 추천</p>
+              </div>
             </div>
-            <div>
-              <h2 className="font-bold text-sky-600">Yotuberabo</h2>
-              <p className="text-sm text-gray-500">채널 추천</p>
-            </div>
-          </div>
           
           {/* 사용자 정보 */}
           {user && (
@@ -317,36 +329,36 @@ export default function Recommendations() {
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1">
-        {/* Header */}
-        <div className="bg-white shadow-sm border-b">
-          <div className="px-6 py-4">
-            <div className="flex justify-between items-center">
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">영상 추천</h1>
-                <p className="text-gray-600">AI 알고리즘 기반 개인화 영상 추천</p>
-              </div>
-              <div className="flex gap-3">
-                <button className="btn btn-outline btn-sm">
-                  <RefreshCw className="w-4 h-4 mr-2" />
-                  새로고침
-                </button>
-                <button className="btn btn-primary btn-sm">
-                  <Star className="w-4 h-4 mr-2" />
-                  즐겨찾기
-                </button>
+        {/* Desktop Main Content */}
+        <div className="flex-1">
+          {/* Desktop Header */}
+          <div className="bg-white shadow-sm border-b">
+            <div className="px-6 py-4">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-900">영상 추천</h1>
+                  <p className="text-gray-600">AI 알고리즘 기반 개인화 영상 추천</p>
+                </div>
+                <div className="flex gap-3">
+                  <button className="btn btn-outline btn-sm">
+                    <RefreshCw className="w-4 h-4 mr-2" />
+                    새로고침
+                  </button>
+                  <button className="btn btn-primary btn-sm">
+                    <Star className="w-4 h-4 mr-2" />
+                    즐겨찾기
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div className="p-6">
+        <div className="p-4 lg:p-6">
         {/* 필터 */}
-        <div className="bg-white rounded-lg shadow p-6 mb-8">
-          <div className="flex items-center justify-between">
+        <div className="bg-white rounded-lg shadow p-4 lg:p-6 mb-6 lg:mb-8">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <h3 className="text-lg font-semibold text-gray-900">추천 필터</h3>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <button 
                 className={`btn btn-sm ${filter === "all" ? "btn-primary" : "btn-outline"}`}
                 onClick={() => setFilter("all")}
@@ -357,34 +369,37 @@ export default function Recommendations() {
                 className={`btn btn-sm ${filter === "high" ? "btn-primary" : "btn-outline"}`}
                 onClick={() => setFilter("high")}
               >
-                높은 점수 (90%+)
+                <span className="hidden sm:inline">높은 점수 (90%+)</span>
+                <span className="sm:hidden">90%+</span>
               </button>
               <button 
                 className={`btn btn-sm ${filter === "medium" ? "btn-primary" : "btn-outline"}`}
                 onClick={() => setFilter("medium")}
               >
-                중간 점수 (80-90%)
+                <span className="hidden sm:inline">중간 점수 (80-90%)</span>
+                <span className="sm:hidden">80-90%</span>
               </button>
               <button 
                 className={`btn btn-sm ${filter === "low" ? "btn-primary" : "btn-outline"}`}
                 onClick={() => setFilter("low")}
               >
-                낮은 점수 (80% 미만)
+                <span className="hidden sm:inline">낮은 점수 (80% 미만)</span>
+                <span className="sm:hidden">80% 미만</span>
               </button>
             </div>
           </div>
         </div>
 
         {/* 추천 영상 목록 */}
-        <div className="space-y-6">
+        <div className="space-y-4 lg:space-y-6">
           {filteredRecommendations.map((video) => (
             <div key={video.id} className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow">
-              <div className="p-6">
-                <div className="flex gap-6">
+              <div className="p-4 lg:p-6">
+                <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
                   {/* 썸네일 */}
-                  <div className="flex-shrink-0">
+                  <div className="flex-shrink-0 w-full lg:w-48">
                     <div className="relative">
-                      <div className="w-48 h-32 bg-gray-200 rounded-lg flex items-center justify-center">
+                      <div className="w-full lg:w-48 h-32 lg:h-32 bg-gray-200 rounded-lg flex items-center justify-center">
                         <PlayCircle className="w-12 h-12 text-gray-400" />
                       </div>
                       <div className="absolute bottom-2 right-2 bg-black bg-opacity-75 text-white text-xs px-2 py-1 rounded">
@@ -395,30 +410,30 @@ export default function Recommendations() {
 
                   {/* 영상 정보 */}
                   <div className="flex-1">
-                    <div className="flex items-start justify-between">
+                    <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
                       <div className="flex-1">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                        <h3 className="text-base lg:text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
                           {video.title}
                         </h3>
                         <p className="text-sm text-gray-600 mb-2">{video.channel}</p>
                         
                         {/* 통계 */}
-                        <div className="flex items-center space-x-4 text-sm text-gray-500 mb-3">
+                        <div className="grid grid-cols-2 lg:flex lg:items-center lg:space-x-4 text-sm text-gray-500 mb-3 gap-2">
                           <span className="flex items-center">
                             <Eye className="w-4 h-4 mr-1" />
-                            {video.views.toLocaleString()}
+                            <span className="truncate">{video.views.toLocaleString()}</span>
                           </span>
                           <span className="flex items-center">
                             <ThumbsUp className="w-4 h-4 mr-1" />
-                            {video.likes.toLocaleString()}
+                            <span className="truncate">{video.likes.toLocaleString()}</span>
                           </span>
                           <span className="flex items-center">
                             <MessageSquare className="w-4 h-4 mr-1" />
-                            {video.comments.toLocaleString()}
+                            <span className="truncate">{video.comments.toLocaleString()}</span>
                           </span>
                           <span className="flex items-center">
                             <Clock className="w-4 h-4 mr-1" />
-                            {video.publishedAt}
+                            <span className="truncate">{video.publishedAt}</span>
                           </span>
                         </div>
 
@@ -520,50 +535,53 @@ export default function Recommendations() {
                       </div>
 
                       {/* 감정 분석 */}
-                      <div className="ml-6">
+                      <div className="lg:ml-6 lg:min-w-[200px]">
                         <h4 className="text-sm font-medium text-gray-900 mb-2">감정 분석</h4>
                         <div className="space-y-2">
                           <div className="flex items-center">
                             <Heart className="w-4 h-4 text-red-500 mr-2" />
-                            <div className="w-20 bg-gray-200 rounded-full h-2 mr-2">
+                            <div className="flex-1 bg-gray-200 rounded-full h-2 mr-2">
                               <div 
                                 className="bg-red-500 h-2 rounded-full" 
                                 style={{ width: `${video.sentiment.pos * 100}%` }}
                               ></div>
                             </div>
-                            <span className="text-xs text-gray-600">{Math.round(video.sentiment.pos * 100)}%</span>
+                            <span className="text-xs text-gray-600 min-w-[35px]">{Math.round(video.sentiment.pos * 100)}%</span>
                           </div>
                           <div className="flex items-center">
                             <TrendingUp className="w-4 h-4 text-yellow-500 mr-2" />
-                            <div className="w-20 bg-gray-200 rounded-full h-2 mr-2">
+                            <div className="flex-1 bg-gray-200 rounded-full h-2 mr-2">
                               <div 
                                 className="bg-yellow-500 h-2 rounded-full" 
                                 style={{ width: `${video.sentiment.neu * 100}%` }}
                               ></div>
                             </div>
-                            <span className="text-xs text-gray-600">{Math.round(video.sentiment.neu * 100)}%</span>
+                            <span className="text-xs text-gray-600 min-w-[35px]">{Math.round(video.sentiment.neu * 100)}%</span>
                           </div>
                         </div>
                       </div>
                     </div>
 
                     {/* 액션 버튼 */}
-                    <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">
-                      <div className="flex gap-2">
-                        <button className="btn btn-sm btn-primary">
+                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 mt-4 pt-4 border-t border-gray-200">
+                      <div className="flex flex-wrap gap-2">
+                        <button className="btn btn-sm btn-primary flex-1 lg:flex-none">
                           <PlayCircle className="w-4 h-4 mr-1" />
-                          영상 보기
+                          <span className="hidden sm:inline">영상 보기</span>
+                          <span className="sm:hidden">보기</span>
                         </button>
-                        <button className="btn btn-sm btn-outline">
+                        <button className="btn btn-sm btn-outline flex-1 lg:flex-none">
                           <Star className="w-4 h-4 mr-1" />
-                          즐겨찾기
+                          <span className="hidden sm:inline">즐겨찾기</span>
+                          <span className="sm:hidden">즐겨찾기</span>
                         </button>
-                        <Link href={`/analysis?video=${encodeURIComponent(video.title)}`} className="btn btn-sm btn-outline">
+                        <Link href={`/analysis?video=${encodeURIComponent(video.title)}`} className="btn btn-sm btn-outline flex-1 lg:flex-none">
                           <Filter className="w-4 h-4 mr-1" />
-                          분석 상세
+                          <span className="hidden sm:inline">분석 상세</span>
+                          <span className="sm:hidden">분석</span>
                         </Link>
                       </div>
-                      <div className="text-sm text-gray-500">
+                      <div className="text-xs lg:text-sm text-gray-500 text-center lg:text-right">
                         업데이트: {new Date().toLocaleDateString()}
                       </div>
                     </div>
@@ -575,17 +593,274 @@ export default function Recommendations() {
         </div>
 
         {/* 페이지네이션 */}
-        <div className="mt-8 flex justify-center">
+        <div className="mt-6 lg:mt-8 flex justify-center">
           <div className="btn-group">
-            <button className="btn btn-outline">이전</button>
-            <button className="btn btn-primary">1</button>
-            <button className="btn btn-outline">2</button>
-            <button className="btn btn-outline">3</button>
-            <button className="btn btn-outline">다음</button>
+            <button className="btn btn-outline btn-sm lg:btn-md">
+              <span className="hidden sm:inline">이전</span>
+              <span className="sm:hidden">‹</span>
+            </button>
+            <button className="btn btn-primary btn-sm lg:btn-md">1</button>
+            <button className="btn btn-outline btn-sm lg:btn-md hidden sm:inline-flex">2</button>
+            <button className="btn btn-outline btn-sm lg:btn-md hidden sm:inline-flex">3</button>
+            <button className="btn btn-outline btn-sm lg:btn-md">
+              <span className="hidden sm:inline">다음</span>
+              <span className="sm:hidden">›</span>
+            </button>
           </div>
         </div>
         </div>
       </div>
+
+      {/* Mobile Layout */}
+      <div className="lg:hidden">
+        <div className="p-4">
+          {/* 필터 */}
+          <div className="bg-white rounded-lg shadow p-4 mb-6">
+            <div className="flex flex-col gap-4">
+              <h3 className="text-xl font-semibold text-gray-900">추천 필터</h3>
+              <div className="flex flex-wrap gap-3">
+                <button 
+                  className={`mobile-btn ${filter === "all" ? "btn-primary" : "btn-outline"} touch-target`}
+                  onClick={() => setFilter("all")}
+                >
+                  전체
+                </button>
+                <button 
+                  className={`mobile-btn ${filter === "high" ? "btn-primary" : "btn-outline"} touch-target`}
+                  onClick={() => setFilter("high")}
+                >
+                  90%+
+                </button>
+                <button 
+                  className={`mobile-btn ${filter === "medium" ? "btn-primary" : "btn-outline"} touch-target`}
+                  onClick={() => setFilter("medium")}
+                >
+                  80-90%
+                </button>
+                <button 
+                  className={`mobile-btn ${filter === "low" ? "btn-primary" : "btn-outline"} touch-target`}
+                  onClick={() => setFilter("low")}
+                >
+                  80% 미만
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* 추천 영상 목록 - 모바일 최적화 */}
+          <div className="space-y-6">
+            {filteredRecommendations.map((video) => (
+              <div key={video.id} className="mobile-card">
+                <div className="p-4">
+                  {/* 썸네일 */}
+                  <div className="w-full mb-4">
+                    <div className="relative">
+                      <div className="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center">
+                        <PlayCircle className="w-24 h-24 text-gray-400" />
+                      </div>
+                      <div className="absolute bottom-3 right-3 bg-black bg-opacity-75 text-white text-base px-3 py-1 rounded">
+                        {video.duration}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 영상 정보 */}
+                  <div className="space-y-5">
+                    <div>
+                      <h3 className="text-xl font-semibold text-gray-900 mb-3 line-clamp-2 mobile-text">
+                        {video.title}
+                      </h3>
+                      <p className="text-lg text-gray-600 font-medium">{video.channel}</p>
+                    </div>
+                    
+                    {/* 통계 */}
+                    <div className="mobile-grid text-base text-gray-500">
+                      <div className="flex items-center">
+                        <Eye className="w-6 h-6 mr-3" />
+                        <span className="truncate font-medium">{video.views.toLocaleString()}</span>
+                      </div>
+                      <div className="flex items-center">
+                        <ThumbsUp className="w-6 h-6 mr-3" />
+                        <span className="truncate font-medium">{video.likes.toLocaleString()}</span>
+                      </div>
+                      <div className="flex items-center">
+                        <MessageSquare className="w-6 h-6 mr-3" />
+                        <span className="truncate font-medium">{video.comments.toLocaleString()}</span>
+                      </div>
+                      <div className="flex items-center">
+                        <Clock className="w-6 h-6 mr-3" />
+                        <span className="truncate font-medium">{video.publishedAt}</span>
+                      </div>
+                    </div>
+
+                    {/* 추천 이유 */}
+                    <div className="bg-blue-50 rounded-lg p-4">
+                      <div className="flex items-center mb-3">
+                        <Star className="w-6 h-6 text-yellow-500 mr-3" />
+                        <span className="text-lg font-medium text-blue-900">추천 점수: {Math.round(video.score * 100)}%</span>
+                      </div>
+                      <p className="text-base text-blue-800 mobile-text">{video.reason}</p>
+                    </div>
+
+                    {/* 감정 분석 */}
+                    <div className="bg-gray-50 rounded-lg p-4">
+                      <h4 className="text-lg font-medium text-gray-900 mb-4">감정 분석</h4>
+                      <div className="space-y-4">
+                        <div className="flex items-center">
+                          <Heart className="w-6 h-6 text-red-500 mr-3" />
+                          <div className="flex-1 bg-gray-200 rounded-full h-4 mr-3">
+                            <div 
+                              className="bg-red-500 h-4 rounded-full" 
+                              style={{ width: `${video.sentiment.pos * 100}%` }}
+                            ></div>
+                          </div>
+                          <span className="text-base text-gray-600 min-w-[50px] font-medium">{Math.round(video.sentiment.pos * 100)}%</span>
+                        </div>
+                        <div className="flex items-center">
+                          <TrendingUp className="w-6 h-6 text-yellow-500 mr-3" />
+                          <div className="flex-1 bg-gray-200 rounded-full h-4 mr-3">
+                            <div 
+                              className="bg-yellow-500 h-4 rounded-full" 
+                              style={{ width: `${video.sentiment.neu * 100}%` }}
+                            ></div>
+                          </div>
+                          <span className="text-base text-gray-600 min-w-[50px] font-medium">{Math.round(video.sentiment.neu * 100)}%</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 댓글 섹션 - 모바일 최적화 */}
+                    <div className="space-y-4">
+                      {/* 긍정 댓글 */}
+                      <div className="bg-green-50 rounded-lg p-4">
+                        <button 
+                          className="flex items-center justify-between w-full mb-3 hover:bg-green-100 rounded-lg p-3 transition-colors touch-target"
+                          onClick={() => toggleComments(video.id, 'positive')}
+                        >
+                          <div className="flex items-center">
+                            <Heart className="w-6 h-6 text-green-600 mr-3" />
+                            <span className="text-lg font-medium text-green-900">긍정 댓글</span>
+                            <span className="ml-3 text-base text-green-600 bg-green-200 px-3 py-1 rounded-full">
+                              {video.positiveComments?.length || 0}
+                            </span>
+                          </div>
+                          <div className="text-green-600">
+                            <svg 
+                              className={`w-6 h-6 transition-transform duration-200 ${expandedComments[`${video.id}-positive`] ? 'rotate-180' : ''}`} 
+                              fill="none" 
+                              stroke="currentColor" 
+                              viewBox="0 0 24 24"
+                            >
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </svg>
+                          </div>
+                        </button>
+                        {expandedComments[`${video.id}-positive`] && (
+                          <div className="space-y-3 animate-fadeIn">
+                            {video.positiveComments?.map((comment, index) => (
+                              <div key={index} className="bg-white rounded-lg p-4 border-l-4 border-green-400">
+                                <p className="text-base text-gray-800 mobile-text">"{comment}"</p>
+                              </div>
+                            )) || (
+                              <div className="bg-white rounded-lg p-4 border-l-4 border-green-400">
+                                <p className="text-base text-gray-800 mobile-text">"이 영상만 보면 제주도 가고싶다"</p>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* 부정 댓글 */}
+                      <div className="bg-red-50 rounded-lg p-4">
+                        <button 
+                          className="flex items-center justify-between w-full mb-3 hover:bg-red-100 rounded-lg p-3 transition-colors touch-target"
+                          onClick={() => toggleComments(video.id, 'negative')}
+                        >
+                          <div className="flex items-center">
+                            <AlertCircle className="w-6 h-6 text-red-600 mr-3" />
+                            <span className="text-lg font-medium text-red-900">부정 댓글</span>
+                            <span className="ml-3 text-base text-red-600 bg-red-200 px-3 py-1 rounded-full">
+                              {video.negativeComments?.length || 0}
+                            </span>
+                          </div>
+                          <div className="text-red-600">
+                            <svg 
+                              className={`w-6 h-6 transition-transform duration-200 ${expandedComments[`${video.id}-negative`] ? 'rotate-180' : ''}`} 
+                              fill="none" 
+                              stroke="currentColor" 
+                              viewBox="0 0 24 24"
+                            >
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </svg>
+                          </div>
+                        </button>
+                        {expandedComments[`${video.id}-negative`] && (
+                          <div className="space-y-3 animate-fadeIn">
+                            {video.negativeComments?.map((comment, index) => (
+                              <div key={index} className="bg-white rounded-lg p-4 border-l-4 border-red-400">
+                                <p className="text-base text-gray-800 mobile-text">"{comment}"</p>
+                              </div>
+                            )) || (
+                              <div className="bg-white rounded-lg p-4 border-l-4 border-red-400">
+                                <p className="text-base text-gray-800 mobile-text">"개선이 필요해 보여요"</p>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* 태그 */}
+                    <div className="flex flex-wrap gap-2">
+                      {video.tags.map((tag, index) => (
+                        <span key={index} className="px-3 py-2 bg-gray-100 text-gray-700 text-base rounded-full font-medium">
+                          #{tag}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* 액션 버튼 */}
+                    <div className="flex flex-col gap-4 pt-4 border-t border-gray-200">
+                      <div className="flex gap-3">
+                        <button className="mobile-btn btn-primary flex-1 touch-target">
+                          <PlayCircle className="w-6 h-6 mr-2" />
+                          영상 보기
+                        </button>
+                        <button className="mobile-btn btn-outline flex-1 touch-target">
+                          <Star className="w-6 h-6 mr-2" />
+                          즐겨찾기
+                        </button>
+                      </div>
+                      <Link href={`/analysis?video=${encodeURIComponent(video.title)}`} className="mobile-btn btn-outline w-full touch-target">
+                        <Filter className="w-6 h-6 mr-2" />
+                        분석 상세
+                      </Link>
+                      <div className="text-base text-gray-500 text-center">
+                        업데이트: {new Date().toLocaleDateString()}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* 페이지네이션 */}
+          <div className="mt-8 flex justify-center">
+            <div className="btn-group">
+              <button className="mobile-btn btn-outline touch-target">‹</button>
+              <button className="mobile-btn btn-primary touch-target">1</button>
+              <button className="mobile-btn btn-outline touch-target">›</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Bottom Navigation */}
+      <MobileNavigation />
+
+      {/* Mobile Bottom Spacer */}
+      <div className="lg:hidden h-16"></div>
     </div>
   );
 }

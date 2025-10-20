@@ -5,6 +5,8 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine
 from .db import engine, SessionLocal
 from .models import Query, Video, Comment, VideoSentimentAgg, Topic
+from .kafka_example import router as kafka_router
+from .spark_example import router as spark_router
 import os
 import asyncio
 import requests
@@ -69,6 +71,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Kafka 라우터 추가
+app.include_router(kafka_router)
+
+# Spark 라우터 추가
+app.include_router(spark_router)
 
 
 class RunIn(BaseModel):
