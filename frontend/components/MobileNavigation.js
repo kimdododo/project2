@@ -9,7 +9,6 @@ import {
   BarChart3, 
   Search,
   Heart,
-  MapPin,
   Calendar,
   MessageSquare,
   Brain

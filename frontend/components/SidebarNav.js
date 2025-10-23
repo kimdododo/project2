@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import config from "@/config";
-import { Home, Users, TrendingUp, Brain, BarChart3, MapPin, Calendar, Heart, MessageSquare, Search } from "lucide-react";
+import { Home, Users, TrendingUp, Brain, BarChart3, Calendar, Heart, MessageSquare, Search } from "lucide-react";
 
 export default function SidebarNav({ active = "/recommendations" }) {
   const [user, setUser] = useState(null);
@@ -19,7 +19,6 @@ export default function SidebarNav({ active = "/recommendations" }) {
     { href: "/analysis", label: "채널 분석", icon: TrendingUp },
     { href: "/personalization", label: "개인화 추천", icon: Brain },
     { href: "/dashboard", label: "대시보드", icon: BarChart3 },
-    { href: "/map", label: "지도", icon: MapPin },
     { href: "/planner", label: "여행 계획", icon: Calendar },
     { href: "/taste", label: "내 취향", icon: Heart },
     { href: "/qa", label: "여행 Q&A", icon: MessageSquare },

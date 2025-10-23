@@ -127,12 +127,12 @@ export default function TastePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex">
       {/* Sidebar - unified */}
       <SidebarNav active="/taste" />
 
       {/* Main Content */}
-      <div className="ml-64 p-8">
+      <main className="flex-1 p-8">
         <div className="max-w-7xl">
           {/* Header */}
           <div className="mb-8">
@@ -433,7 +433,7 @@ export default function TastePage() {
             </div>
           )}
         </div>
-      </div>
+      </main>
     </div>
   );
 }

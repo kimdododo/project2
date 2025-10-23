@@ -26,10 +26,6 @@ const links = [
     label: "대시보드",
   },
   {
-    href: "/map",
-    label: "지도",
-  },
-  {
     href: "/planner",
     label: "여행 계획",
   },

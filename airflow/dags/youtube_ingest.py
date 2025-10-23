@@ -1,4 +1,4 @@
-import os, json, time, requests, pymysql
+import os, json, time, requests, pymysql, random
 from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.python import PythonOperator
@@ -18,30 +18,117 @@ def get_mysql_conn():
     )
 
 def ensure_tables():
-    ddl_videos = """
-    CREATE TABLE IF NOT EXISTS videos (
-      id VARCHAR(64) PRIMARY KEY,
-      title VARCHAR(255),
-      channel_id VARCHAR(64),
-      published_at DATETIME,
-      INDEX(channel_id)
-    );
-    """
-    ddl_comments = """
-    CREATE TABLE IF NOT EXISTS comments (
-      id VARCHAR(128) PRIMARY KEY,
-      video_id VARCHAR(64),
-      author_name VARCHAR(255),
-      text LONGTEXT,
-      like_count INT DEFAULT 0,
-      published_at DATETIME,
-      INDEX(video_id),
-      CONSTRAINT fk_comments_video FOREIGN KEY (video_id) REFERENCES videos(id)
-    );
-    """
+    """향상된 스키마로 테이블 생성"""
     with get_mysql_conn() as conn, conn.cursor() as cur:
-        cur.execute(ddl_videos)
-        cur.execute(ddl_comments)
+        # channels 테이블
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS channels (
+                id VARCHAR(64) PRIMARY KEY,
+                title VARCHAR(255) NOT NULL,
+                description TEXT,
+                published_at DATETIME,
+                country VARCHAR(10),
+                view_count BIGINT DEFAULT 0,
+                subscriber_count BIGINT DEFAULT 0,
+                video_count INT DEFAULT 0,
+                thumbnail_url VARCHAR(500),
+                banner_url VARCHAR(500),
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            )
+        """)
+        
+        # videos 테이블 (확장)
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS videos (
+                id VARCHAR(64) PRIMARY KEY,
+                title VARCHAR(500) NOT NULL,
+                description TEXT,
+                channel_id VARCHAR(64) NOT NULL,
+                published_at DATETIME NOT NULL,
+                duration VARCHAR(20),
+                view_count BIGINT DEFAULT 0,
+                like_count INT DEFAULT 0,
+                dislike_count INT DEFAULT 0,
+                comment_count INT DEFAULT 0,
+                category_id INT,
+                tags JSON,
+                thumbnail_url VARCHAR(500),
+                definition VARCHAR(10),
+                caption BOOLEAN DEFAULT FALSE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                FOREIGN KEY (channel_id) REFERENCES channels(id) ON DELETE CASCADE
+            )
+        """)
+        
+        # comments 테이블 (확장)
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS comments (
+                id VARCHAR(128) PRIMARY KEY,
+                video_id VARCHAR(64) NOT NULL,
+                parent_id VARCHAR(128),
+                author_name VARCHAR(255) NOT NULL,
+                author_channel_id VARCHAR(64),
+                text TEXT NOT NULL,
+                published_at DATETIME NOT NULL,
+                like_count INT DEFAULT 0,
+                reply_count INT DEFAULT 0,
+                is_public BOOLEAN DEFAULT TRUE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (video_id) REFERENCES videos(id) ON DELETE CASCADE,
+                FOREIGN KEY (parent_id) REFERENCES comments(id) ON DELETE CASCADE
+            )
+        """)
+        
+        # channel_growth 테이블
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS channel_growth (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                channel_id VARCHAR(64) NOT NULL,
+                recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                subscriber_count BIGINT NOT NULL,
+                view_count BIGINT NOT NULL,
+                video_count INT NOT NULL,
+                growth_rate DECIMAL(5,2) DEFAULT 0.00,
+                FOREIGN KEY (channel_id) REFERENCES channels(id) ON DELETE CASCADE
+            )
+        """)
+        
+        # sentiment_analysis 테이블
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS sentiment_analysis (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                comment_id VARCHAR(128) NOT NULL,
+                video_id VARCHAR(64) NOT NULL,
+                sentiment_score DECIMAL(3,2) NOT NULL,
+                sentiment_label ENUM('positive', 'negative', 'neutral') NOT NULL,
+                confidence DECIMAL(3,2) DEFAULT 0.00,
+                emotion_tags JSON,
+                analyzed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (comment_id) REFERENCES comments(id) ON DELETE CASCADE,
+                FOREIGN KEY (video_id) REFERENCES videos(id) ON DELETE CASCADE
+            )
+        """)
+        
+        # video_sentiment_agg 테이블
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS video_sentiment_agg (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                video_id VARCHAR(64) NOT NULL,
+                positive_count INT DEFAULT 0,
+                negative_count INT DEFAULT 0,
+                neutral_count INT DEFAULT 0,
+                total_comments INT DEFAULT 0,
+                avg_sentiment_score DECIMAL(3,2) DEFAULT 0.00,
+                sentiment_ratio DECIMAL(3,2) DEFAULT 0.00,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                FOREIGN KEY (video_id) REFERENCES videos(id) ON DELETE CASCADE,
+                UNIQUE KEY unique_video_sentiment (video_id)
+            )
+        """)
+        
+        print("[INFO] Enhanced tables ensured")
 
 def generate_sample_data(keyword):
     """키워드에 따른 샘플 데이터 생성"""
@@ -141,14 +228,16 @@ def generate_sample_comments(cursor, video_id, video_title):
         
         try:
             cursor.execute("""
-            INSERT INTO comments (id, video_id, author_name, text, published_at, like_count)
-            VALUES (%s, %s, %s, %s, %s, %s)
+            INSERT INTO comments (id, video_id, author_name, text, published_at, like_count, reply_count, is_public)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
             ON DUPLICATE KEY UPDATE
                 author_name=VALUES(author_name),
                 text=VALUES(text),
                 published_at=VALUES(published_at),
-                like_count=VALUES(like_count)
-            """, (comment_id, video_id, author, text, published_at, random.randint(0, 50)))
+                like_count=VALUES(like_count),
+                reply_count=VALUES(reply_count),
+                is_public=VALUES(is_public)
+            """, (comment_id, video_id, author, text, published_at, random.randint(0, 50), random.randint(0, 5), True))
         except Exception as e:
             print(f"[WARN] Failed to insert comment {comment_id}: {e}")
     
@@ -210,15 +299,48 @@ def fetch_videos_and_comments(**context):
                 except Exception:
                     published_at = None
 
-            # upsert videos
+            # 채널 정보 먼저 저장
+            channel_title = sn.get("channelTitle", "Unknown Channel")
+            channel_description = sn.get("description", "")
+            channel_published = sn.get("publishedAt", None)
+            
+            if channel_published:
+                try:
+                    channel_published = datetime.fromisoformat(channel_published.replace("Z","+00:00"))
+                except Exception:
+                    channel_published = None
+            
             cur.execute("""
-            INSERT INTO videos (id, title, channel_id, published_at)
-            VALUES (%s, %s, %s, %s)
+            INSERT INTO channels (id, title, description, published_at, view_count, subscriber_count, video_count)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
             ON DUPLICATE KEY UPDATE
                 title=VALUES(title),
-                channel_id=VALUES(channel_id),
+                description=VALUES(description),
                 published_at=VALUES(published_at)
-            """, (vid, title, channel_id, published_at))
+            """, (channel_id, channel_title, channel_description, channel_published, 
+                  random.randint(1000, 1000000), random.randint(100, 100000), random.randint(10, 1000)))
+            
+            # upsert videos (확장된 스키마)
+            description = sn.get("description", "")
+            tags = json.dumps(sn.get("tags", []))
+            thumbnail_url = sn.get("thumbnails", {}).get("default", {}).get("url", "")
+            
+            cur.execute("""
+            INSERT INTO videos (id, title, description, channel_id, published_at, view_count, like_count, comment_count, tags, thumbnail_url)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            ON DUPLICATE KEY UPDATE
+                title=VALUES(title),
+                description=VALUES(description),
+                channel_id=VALUES(channel_id),
+                published_at=VALUES(published_at),
+                view_count=VALUES(view_count),
+                like_count=VALUES(like_count),
+                comment_count=VALUES(comment_count),
+                tags=VALUES(tags),
+                thumbnail_url=VALUES(thumbnail_url)
+            """, (vid, title, description, channel_id, published_at, 
+                  random.randint(1000, 1000000), random.randint(10, 50000), random.randint(0, 1000),
+                  tags, thumbnail_url))
 
             # 댓글 수집 (API 키가 유효한 경우에만)
             if YOUTUBE_API_KEY and YOUTUBE_API_KEY != "AIzaSyBvOkBwv7wjH4fE8oY2cQ9mN3pL6sT1uV7w":
@@ -245,14 +367,20 @@ def fetch_videos_and_comments(**context):
                                     ctime = datetime.fromisoformat(ctime.replace("Z","+00:00"))
                                 except Exception:
                                     ctime = None
+                            like_count = top.get("likeCount", 0)
+                            reply_count = ct["snippet"].get("totalReplyCount", 0)
+                            
                             cur.execute("""
-                            INSERT INTO comments (id, video_id, author_name, text, published_at)
-                            VALUES (%s, %s, %s, %s, %s)
+                            INSERT INTO comments (id, video_id, author_name, text, published_at, like_count, reply_count, is_public)
+                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
                             ON DUPLICATE KEY UPDATE
                                 author_name=VALUES(author_name),
                                 text=VALUES(text),
-                                published_at=VALUES(published_at)
-                            """, (cid, vid, author, text, ctime))
+                                published_at=VALUES(published_at),
+                                like_count=VALUES(like_count),
+                                reply_count=VALUES(reply_count),
+                                is_public=VALUES(is_public)
+                            """, (cid, vid, author, text, ctime, like_count, reply_count, True))
                     time.sleep(0.1)
                 except Exception as e:
                     print(f"[WARN] comments fetch failed for {vid}: {e}")

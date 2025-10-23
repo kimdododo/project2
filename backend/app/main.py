@@ -79,6 +79,14 @@ app.include_router(kafka_router)
 # Spark 라우터 추가
 app.include_router(spark_router)
 
+# 실시간 API 라우터 추가
+from .realtime_api import router as realtime_router
+app.include_router(realtime_router)
+
+# ML API 라우터 추가
+from .ml_api import router as ml_router
+app.include_router(ml_router)
+
 
 class RunIn(BaseModel):
     keyword: str

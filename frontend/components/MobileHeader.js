@@ -91,10 +91,6 @@ export default function MobileHeader({ title, subtitle, icon: Icon, onFilterClic
                   <Brain className="w-5 h-5" />
                   개인화 추천
                 </a>
-                <a href="/map" className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-100">
-                  <MapPin className="w-5 h-5" />
-                  지도
-                </a>
                 <a href="/planner" className="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-100">
                   <Calendar className="w-5 h-5" />
                   여행 계획

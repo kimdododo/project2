@@ -1,0 +1,6 @@
+﻿id,title,channel_id,channel_name,view_count,like_count,comment_count,published_at,avg_sentiment_score,sentiment_ratio,retention_rate,engagement_rate
+ai_video_002,AI Tutorial for Beginners,UC_AI_Channel,Unknown Channel,976479,12875,303,2025-10-16 13:36:35,0,0,0,0
+ai_video_001,Introduction to AI - Complete Guide,UC_AI_Channel,Unknown Channel,770549,13731,986,2025-09-26 13:36:35,0,0,0,0
+ai_video_003,Advanced AI Techniques,UC_AI_Channel,Unknown Channel,633928,16661,859,2025-10-07 13:36:35,0,0,0,0
+ai_video_004,AI in Real World Applications,UC_AI_Channel,Unknown Channel,619768,6384,246,2025-09-23 13:36:35,0,0,0,0
+ai_video_005,Future of AI Technology,UC_AI_Channel,Unknown Channel,505436,34079,60,2025-10-01 13:36:35,0,0,0,0
