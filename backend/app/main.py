@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Depends, Header
+from fastapi import FastAPI, HTTPException, Depends, Header, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sqlalchemy import text
@@ -7,6 +7,8 @@ from .db import engine, SessionLocal
 from .models import Query, Video, Comment, VideoSentimentAgg, Topic
 from .kafka_example import router as kafka_router
 from .spark_example import router as spark_router
+from .travel_api import router as travel_router
+from .korean_ml_api import router as korean_ml_router
 import os
 import asyncio
 import requests
@@ -76,6 +78,12 @@ app.add_middleware(
 # Kafka 라우터 추가
 app.include_router(kafka_router)
 
+# 여행 API 라우터 추가
+app.include_router(travel_router)
+
+# 한국어 ML API 라우터 추가
+app.include_router(korean_ml_router)
+
 # Spark 라우터 추가
 app.include_router(spark_router)
 
@@ -83,9 +91,24 @@ app.include_router(spark_router)
 from .realtime_api import router as realtime_router
 app.include_router(realtime_router)
 
+# 실시간 테스트 API 라우터 추가
+from .realtime_test_api import router as realtime_test_router
+app.include_router(realtime_test_router)
+
+# 실시간 WebSocket 엔드포인트
+from .realtime_websocket import websocket_handler
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket_handler.handle_websocket(websocket)
+
 # ML API 라우터 추가
 from .ml_api import router as ml_router
 app.include_router(ml_router)
+
+# 루트 경로
+@app.get("/")
+async def root():
+    return {"message": "YouTube Analytics API Server", "status": "running"}
 
 
 class RunIn(BaseModel):
